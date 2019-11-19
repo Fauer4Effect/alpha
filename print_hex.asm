@@ -12,18 +12,22 @@ get_chars:
   ; and get the ascii code for that
   mov dx, ax
   and dx, 0xf
-  or dx, 0x30
+  cmp dx, 0x0a
+  jge char
+  
+  add dx, 0x30
 
+move:
   ; put bx at the end of hex_out
   mov bx, HEX_OUT
   add bx, 5
   ; move back however far we need to
   sub bx, cx
   ; put ascii value of the number into that location
-  mov [bx], dx
+  mov [bx], dl
   
   ; get the next 4 bits
-  shr dx, 4
+  shr ax, 4
   add cx, 1
   cmp cx, 4
   jl get_chars
@@ -32,7 +36,10 @@ get_chars:
   call print_string
   ret
 
-%include "print_string.asm"
+char:
+  add dx, 0x57
+  jmp move
 
 ; global variables
-HEX_OUT: db "0x0000", 0
+HEX_OUT:
+  db "0x0000", 0
