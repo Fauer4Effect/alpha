@@ -1,38 +1,41 @@
 ;
-; Simple boot sector to read other sections from disk
+; Boot sector that enters 32-bit protected mode
 ;
 
 [org 0x7c00]
 
-mov [BOOT_DRIVE], dl    ; BIOS stores the boot drive in DL
-
-mov bp, 0x8000          ; set the stack up
+; set the stack
+mov bp, 0x9000
 mov sp, bp
 
-mov bx, 0x9000          ; load 5 sectors to 0x0000(ES):0x9000(BX)
-mov dh, 5               ; from boot disk
-mov dl, [BOOT_DRIVE]
-call disk_load
+mov bx, MSG_REAL_MODE
+call print_string
 
-mov dx, [0x9000]        ; print out 1st loaded word
-call print_hex          ; expected 0xdead
-
-mov dx, [0x9000 + 512]  ; also print 1st word from 2nd sector
-call print_hex          ; expected 0xbeef
+call switch_to_pm         ; never return from here
 
 jmp $
 
-; %include "../print/print_string.asm"
-; %include "../hex/print_hex.asm"
 %include "print_string.asm"
-%include "print_hex.asm"
-%include "disk_load.asm"
+%include "gdt.asm"
+%include "print_string_protected.asm"
+%include "switch_protected.asm"
 
-BOOT_DRIVE: 
-  db 0
+[bits 32]
+; this is were we arrive after switching to an init protected mode
+BEGIN_PM:
+  mov ebx, MSG_PROT_MODE
+  call print_string_pm      ; 32 bit print routine
+  ; message will print on the top left of the screen so it might
+  ; look like it didn't work if you don't check the right place
 
+  jmp $
+
+MSG_REAL_MODE:
+  db "Started in 16-bit Real Mode", 0
+  
+MSG_PROT_MODE:
+  db "Successfully landed in 32-bit protected mode", 0
+
+; bootsector padding
 times 510-($-$$) db 0
 dw 0xaa55
-
-times 256 dw 0xdead
-times 256 dw 0xbeef

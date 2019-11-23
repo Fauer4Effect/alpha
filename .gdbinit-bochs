@@ -1,0 +1,8 @@
+# for 16 bit mode
+set architecture i8086
+set disassembly-flavor intel
+tui enable
+layout asm
+layout regs
+
+target remote localhost:1234

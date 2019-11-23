@@ -1,7 +1,10 @@
 boot_sect.bin: boot_sect.asm
 	nasm $^ -f bin -o $@
 
-test: boot_sect.bin
+debug: boot_sect.bin
+	bochs -f bochs-debug
+
+run: boot_sect.bin
 	bochs
 
 clean:

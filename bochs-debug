@@ -2,3 +2,4 @@
 # disk inserted into a computer at boot time.
 floppya: 1_44=boot_sect.bin, status=inserted
 boot: a
+gdbstub: enabled=1, port=1234, text_base=0, data_base=0, bss_base=0
