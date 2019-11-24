@@ -23,9 +23,8 @@ os-image: boot/boot_sect.bin kernel.bin
 #		- kernel_entry which jumps to main() in the kernel
 # 	- compiled C kernel
 
-# i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
 kernel.bin: kernel/kernel_entry.o ${OBJ}
-	i686-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
+	i686-elf-gcc -T linker.ld -o $@ -ffreestanding -O2 -nostdlib $^ -lgcc
 
 # Generic rule to build 'somefile.o' from 'somefile.c'
 # For simplicity, C files depend on all header files
@@ -37,7 +36,6 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 	nasm $< -f elf -o $@
 
 %.bin : %.asm
-	# nasm $< -f bin -I '../../16bit/' -o $@
 	nasm $< -f bin -I 'boot/' -o $@
 
 kernel.dis: kernel.bin
