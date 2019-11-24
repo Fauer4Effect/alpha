@@ -4,6 +4,3 @@ void kernel_main() {
   // put an X there
   *video_memory = '$';
 }
-
-// This is the linking we eventually want to use
-// i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
