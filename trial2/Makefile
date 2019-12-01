@@ -1,4 +1,4 @@
-CFLAGS=-std=c99 -ffreestanding -O2 -Wall -Wextra -g
+CFLAGS=-std=c99 -ffreestanding -O0 -Wall -Wextra -g
 
 all: myos.bin
 
@@ -10,7 +10,7 @@ run: all
 
 # The actual disk image of the os, bootsector + kernel
 myos.bin: boot.o kernel.o
-	i686-elf-gcc -T linker.ld -o $@ -ffreestanding -O2 -nostdlib $^ -lgcc
+	i686-elf-gcc -T linker.ld -o $@ -ffreestanding -O0 -nostdlib $^ -lgcc
 	mkdir -p isodir/boot/grub
 	cp myos.bin isodir/boot/myos.bin
 	cp grub.cfg isodir/boot/grub/grub.cfg
